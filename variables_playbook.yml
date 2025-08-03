@@ -1,0 +1,75 @@
+---
+- name: "Types of variables in Ansible"
+  hosts: localhost
+  become: true
+  vars_files:
+    - vars.yml
+
+  vars:
+    string_variable: "This is an example variable"
+    integer_variable: 42
+    float_variable: 3.14
+    boolean_variable: true
+    list_variable: ["item1", "item2", "item3"]
+    dict_variable: {"key1": "value1", "key2": "value2"}
+    
+    nested_list_variable:
+      - name: John
+        fruits:
+          - apple
+          - orange
+      - name: Jane
+        fruits:
+          - banana
+          - apple
+          - orange
+
+
+  tasks:
+    - name: "Display string variable"
+      ansible.builtin.debug:
+        var: string_variable
+
+    - name: "Display integer variable"
+      ansible.builtin.debug:
+        var: integer_variable
+
+    - name: "Display float variable"
+      ansible.builtin.debug:
+        var: float_variable
+
+    - name: "Display boolean variable"
+      ansible.builtin.debug:
+        var: boolean_variable
+
+    - name: "loop list variable"
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ list_variable }}"
+
+    - name: "Iterate over dictionary variable"
+      ansible.builtin.debug:
+        msg: "{{ item.key }}: {{ item.value }}"
+      loop: "{{ dict_variable | dict2items }}"
+
+    - name: "Iterate over nested list variable"
+      ansible.builtin.debug:
+        msg: "{{ item.name }}'s favorite fruits are: {{ item.fruits | join(', ') }}"
+      loop: "{{ nested_list_variable }}"
+
+  # sudo ansible-playbook variables_playbook.yml -e version=1.1
+    - name: "Set a variable from command line input"
+      debug:
+        var: version
+
+    - name: "Set environment variable"
+      ansible.builtin.set_fact:
+        my_env_var: "{{ lookup('env', 'MY_ENV_VAR') | default('ASDASDAS') }}"
+
+    - name: "Get environment variable value"
+      ansible.builtin.debug:
+        msg: "PATH is set to: {{ lookup('env', 'PATH') | default('ASDASDAS') }}"
+
+    - name: "Display variable from var.yml"
+      ansible.builtin.debug:
+        msg: "Variable from var.yml: {{ VARIABLE_FROM_VAR_YML }}"
