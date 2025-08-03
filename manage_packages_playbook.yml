@@ -5,14 +5,11 @@
   tasks:
     - name: "install packages"
       package:
-        name: nignx  
+        name: nginx  
         state: present
 
     - name: "Check if packages are installed"
-      # dpkg is the Debian package manager 
-      # it's a low-level tool used on Debian-based systems (like Ubuntu, Kali, Linux Mint, etc.) to install, remove, and manage .deb packages
-      # -l lists all installed packages
-      command: nignx --version
+      command: nginx -version
       register: package_check
 
     - name: "Display installed packages"
@@ -22,15 +19,10 @@
 # Creating a new document to remove packages
 # ---
 #   - name: "Remove packages"
-#     hosts: all
-#     become: yes
-#     gather_facts: no
+#     hosts: localhost
+#     become: true
 #     tasks:
 #       - name: "Remove packages"
 #         package:
-#           name: "{{item}}"
+#           name: "nginx"
 #           state: absent
-        # loop:
-        #   - git
-        #   - vim
-        #   - curl
