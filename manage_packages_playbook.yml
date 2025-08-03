@@ -1,0 +1,36 @@
+---
+- name: "This is Ansible demo for managing packages on multiple hosts"
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "install packages"
+      package:
+        name: nignx  
+        state: present
+
+    - name: "Check if packages are installed"
+      # dpkg is the Debian package manager 
+      # it's a low-level tool used on Debian-based systems (like Ubuntu, Kali, Linux Mint, etc.) to install, remove, and manage .deb packages
+      # -l lists all installed packages
+      command: nignx --version
+      register: package_check
+
+    - name: "Display installed packages"
+      debug:
+        msg: "{{package_check.stdout}}"
+
+# Creating a new document to remove packages
+# ---
+#   - name: "Remove packages"
+#     hosts: all
+#     become: yes
+#     gather_facts: no
+#     tasks:
+#       - name: "Remove packages"
+#         package:
+#           name: "{{item}}"
+#           state: absent
+        # loop:
+        #   - git
+        #   - vim
+        #   - curl
