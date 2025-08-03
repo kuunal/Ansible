@@ -73,3 +73,9 @@
     - name: "Display variable from var.yml"
       ansible.builtin.debug:
         msg: "Variable from var.yml: {{ VARIABLE_FROM_VAR_YML }}"
+
+    - name: "Iterate dictionary key print when name is Jane"
+      ansible.builtin.debug:
+        msg: "{{ item.name }}: {{ item.fruits | join(', ') }}"
+      loop: "{{ nested_list_variable }}"
+      when: item.name == "Jane"
