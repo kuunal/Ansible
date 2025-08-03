@@ -20,9 +20,8 @@
           - orange
       - name: Jane
         fruits:
-          - banana
-          - apple
-          - orange
+          - pear
+          - strawberry
 
 
   tasks:
@@ -52,10 +51,7 @@
         msg: "{{ item.key }}: {{ item.value }}"
       loop: "{{ dict_variable | dict2items }}"
 
-    - name: "Iterate over nested list variable"
-      ansible.builtin.debug:
-        msg: "{{ item.name }}'s favorite fruits are: {{ item.fruits | join(', ') }}"
-      loop: "{{ nested_list_variable }}"
+
 
   # sudo ansible-playbook variables_playbook.yml -e version=1.1
     - name: "Set a variable from command line input"
@@ -74,8 +70,15 @@
       ansible.builtin.debug:
         msg: "Variable from var.yml: {{ VARIABLE_FROM_VAR_YML }}"
 
-    - name: "Iterate dictionary key print when name is Jane"
+    - name: "update nested list variable"
       ansible.builtin.debug:
-        msg: "{{ item.name }}: {{ item.fruits | join(', ') }}"
+        msg: "{{ item.name }}: pear, strawberry"
       loop: "{{ nested_list_variable }}"
       when: item.name == "Jane"
+      tags: update_nested_list
+    
+    - name: "Iterate over nested list variable"
+      ansible.builtin.debug:
+        msg: "{{ item.name }}'s favorite fruits are: {{ item.fruits | join(', ') }}"
+      loop: "{{ nested_list_variable }}"
+      tags: display_nested_list
