@@ -1,0 +1,15 @@
+---
+- name: "Generate properties file from Jinja template"
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "Generate properties file from Jinja template"
+      ansible.builtin.template:
+        src: "demo.j2"
+        dest: "output/demo.properties"
+      vars:
+        src_root: "/path/to/src"
+        build_dir: "/path/to/build"
+        ansible_user: "ansible_user"
+        product: "my_product"
+      

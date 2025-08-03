@@ -1,0 +1,28 @@
+---
+- name: "This is Ansible demo for managing packages on multiple hosts"
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "install packages"
+      package:
+        name: nginx  
+        state: present
+
+    - name: "Check if packages are installed"
+      command: nginx -version
+      register: package_check
+
+    - name: "Display installed packages"
+      debug:
+        msg: "{{package_check.stdout}}"
+
+# Creating a new document to remove packages
+# ---
+#   - name: "Remove packages"
+#     hosts: localhost
+#     become: true
+#     tasks:
+#       - name: "Remove packages"
+#         package:
+#           name: "nginx"
+#           state: absent

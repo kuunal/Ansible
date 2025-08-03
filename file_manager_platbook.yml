@@ -1,0 +1,31 @@
+---
+- name: "This is file manager"
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "Create a directory"
+      ansible.builtin.file:
+        path: "/output/tmp"
+        state: directory
+    
+    - name: "Create a file"
+      ansible.builtin.copy:
+        dest: "/output/tmp/sample.txt"
+        content: "This is a sample file created by Ansible."
+      
+    - name: "check if the file exists"
+      ansible.builtin.stat:
+        path: "/output/tmp/sample.txt"
+      register: file_check
+
+    - name: "Append content to the file"
+      ansible.builtin.lineinfile:
+        path: "/output/tmp/sample.txt"
+        line: "This is an additional line added to the file."
+      when: file_check.stat.exists
+    
+    - name: "Append to the beginning of the file"
+      ansible.builtin.lineinfile:
+        path: "/output/tmp/sample.txt"
+        line: "This is a line added to the beginning of the file."
+        insertafter: BOF

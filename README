@@ -1,0 +1,105 @@
+# About Ansible
+
+Ansible is an open-source automation tool for tasks such as configuration management, application deployment, and orchestration. It uses simple YAML files called playbooks to describe automation jobs and operates agentlessly over SSH or WinRM.
+
+## Architecture Overview
+           +------------------+
+           |  Control Node 🖥️ |
+           |  (with Ansible)  |
+           +--------+---------+
+                    |
+     -----------------------------
+     |             |             |
++---------+   +-----------+   +-----------+
+|              Managed Node                |
+|  Linux 1 |   | Windows 1 |   | Linux 2   |
++---------+   +-----------+   +-----------+
+  SSH           WinRM            SSH
+  Ansible is agentless — the managed nodes don’t run any agent or daemon
+
+- **Control Node:** The machine where Ansible is installed and playbooks are executed.  It controls and manages other machines (called managed nodes or hosts) using SSH (Linux) or WinRM (Windows).
+- **Managed Nodes:** The target machines managed by Ansible (no agent required). All the tasks are perfomed on this machines.
+- **Inventory:** A file listing managed nodes and connection details.
+- **Modules:** Reusable scripts that perform tasks (e.g., install packages, copy files).
+- **Playbooks:** YAML files defining automation tasks and workflows.
+
+Ansible connects to managed nodes, executes modules, and returns results to the control node, making it simple and efficient for automation.
+
+# Authenticate Control Node to Managed Node
+  Ansible supports multiple methods:
+  - **SSH** Either pass private_key or setup passwordless authentication
+  - **Password**
+
+
+## How to setup passwordless SSH authentication
+
+1. **Generate SSH key pair on the control node(ansible server):**
+   ```
+   ssh-keygen -t rsa -b 4096
+   ```
+   Press Enter to accept the default file location and set a passphrase if desired.
+
+2. **Copy the public key of control node to the managed node's authorized keys:**
+   ```
+   ssh-copy-id user@managed_node_ip
+   OR
+   Manually copy `./ssh/id_rsa.pub` from control node to the `./ssh/authorized_key' of managed node
+   ```
+   Replace `user` and `managed_node_ip` with your username and the IP address of the managed node.
+
+3. **Test passwordless SSH login:**
+   ```
+   ssh user@managed_node_ip
+   ```
+   You should be able to log in without entering a password.
+
+4. **Update your Ansible inventory:**
+   Ensure the managed node is listed and Ansible will use SSH for connections.
+
+Now, Ansible can connect to managed nodes without prompting for a password.
+
+managed node -> encrypt some text/file with controller node's id_rsa.pub
+controller node -> decrypts that file/text using private key
+
+
+# Ansible Project
+
+This repository contains Ansible playbooks and configuration files for automating package management and system tasks.
+
+## Project Structure
+
+- `manage_packages_playbook.yml`: Installs and verifies packages on hosts.
+- `hello_world_playbook.yml`: Example playbook for basic Ansible usage.
+- `inventory.ini`: Inventory file listing managed hosts and connection details.
+- `.gitignore`: Specifies files and folders to ignore in version control.
+- `output/`: Directory for playbook outputs (ignored by git).
+
+## Usage
+
+
+1. Update `inventory.ini` with your hosts and credentials.
+
+2. To run the package management playbook:
+   ```
+   ansible-playbook -i inventory.ini manage_packages_playbook.yml
+   ```
+
+3. To run the hello world playbook:
+   ```
+   ansible-playbook -i inventory.ini hello_world_playbook.yml
+   ```
+
+4. For sudo tasks, use `--ask-become-pass` or set `ansible_become_password` in your inventory.
+
+# References
+https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
+
+## Requirements
+
+- Ansible installed on your control machine.
+- SSH access or local connection to target hosts.
+
+
+## License
+
+MIT
