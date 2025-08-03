@@ -18,7 +18,7 @@ Ansible is an open-source automation tool for tasks such as configuration manage
   Ansible is agentless — the managed nodes don’t run any agent or daemon
 
 - **Control Node:** The machine where Ansible is installed and playbooks are executed.  It controls and manages other machines (called managed nodes or hosts) using SSH (Linux) or WinRM (Windows).
-- **Managed Nodes:** The target machines managed by Ansible (no agent required).
+- **Managed Nodes:** The target machines managed by Ansible (no agent required). All the tasks are perfomed on this machines.
 - **Inventory:** A file listing managed nodes and connection details.
 - **Modules:** Reusable scripts that perform tasks (e.g., install packages, copy files).
 - **Playbooks:** YAML files defining automation tasks and workflows.
@@ -33,15 +33,17 @@ Ansible connects to managed nodes, executes modules, and returns results to the 
 
 ## How to setup passwordless SSH authentication
 
-1. **Generate SSH key pair on the control node:**
+1. **Generate SSH key pair on the control node(ansible server):**
    ```
    ssh-keygen -t rsa -b 4096
    ```
    Press Enter to accept the default file location and set a passphrase if desired.
 
-2. **Copy the public key to the managed node:**
+2. **Copy the public key of control node to the managed node's authorized keys:**
    ```
    ssh-copy-id user@managed_node_ip
+   OR
+   Manually copy `./ssh/id_rsa.pub` from control node to the `./ssh/authorized_key' of managed node
    ```
    Replace `user` and `managed_node_ip` with your username and the IP address of the managed node.
 
@@ -55,6 +57,10 @@ Ansible connects to managed nodes, executes modules, and returns results to the 
    Ensure the managed node is listed and Ansible will use SSH for connections.
 
 Now, Ansible can connect to managed nodes without prompting for a password.
+
+managed node -> encrypt some text/file with controller node's id_rsa.pub
+controller node -> decrypts that file/text using private key
+
 
 # Ansible Project
 
@@ -85,10 +91,14 @@ This repository contains Ansible playbooks and configuration files for automatin
 
 4. For sudo tasks, use `--ask-become-pass` or set `ansible_become_password` in your inventory.
 
+# References
+https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
+
 ## Requirements
 
 - Ansible installed on your control machine.
 - SSH access or local connection to target hosts.
+
 
 ## License
 

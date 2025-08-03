@@ -5,6 +5,9 @@
   vars_files:
     - vars.yml
 
+  environment:
+    MY_ENV_VAR: "SomeValue"
+
   vars:
     string_variable: "This is an example variable"
     integer_variable: 42
@@ -13,6 +16,7 @@
     list_variable: ["item1", "item2", "item3"]
     dict_variable: {"key1": "value1", "key2": "value2"}
     
+    # This variable contains a list of dictionaries
     nested_list_variable:
       - name: John
         fruits:
@@ -57,10 +61,6 @@
     - name: "Set a variable from command line input"
       debug:
         var: version
-
-    - name: "Set environment variable"
-      ansible.builtin.set_fact:
-        my_env_var: "{{ lookup('env', 'MY_ENV_VAR') | default('ASDASDAS') }}"
 
     - name: "Get environment variable value"
       ansible.builtin.debug:
